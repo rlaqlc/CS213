@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href='http://fonts.googleapis.com/css?family=Play' rel='stylesheet' type='text/css'>
+  <style type="text/css">
+    *
+    {
+      font-family: 'Play', sans-serif;
+    }
+
+    h2
+    {
+      font-size: 20px;
+      text-align: center;
+    }
+ 
+    form#calculator 
+    {
+      width: 200px;
+      margin: 0 auto;
+    }
+
+    label 
+    {
+      font-size: 12px;
+    }
+ 
+    p#display
+    {
+      font-size: 12px;
+      margin-bottom: 4px;
+      border: 1px solid black;
+      line-height: 30px;
+      text-align: center;
+    }
+
+    input 
+    {
+      padding-left: 5px;
+    }
+
+    input, label 
+    {
+       margin-left: 24px;
+    }
+
+    div#outerLine
+    {
+      margin: 0;
+      border: 1px solid black;
+      padding-top: 5px;
+      height: 143px;
+    }
+
+    #calcButton, #resetButton 
+    {
+      margin-left: 0;
+      margin-top: 4px;
+      width: 98px;
+      height: 30px;
+      background-color: white;
+      border: 1px solid black;
+      color: black;
+      font-size: 12px;
+    }
+
+    input 
+    {
+      margin-top: 3px;
+      width: 147px;
+      height: 17px;
+      border: 1px solid black;
+      font-color: black;
+    }
+    
+    p#error 
+    {
+      color: red;
+      margin: 0 auto;
+      width: 420px;
+      margin-top: 13px;
+      text-align: center;
+    }
+  </style>
+  <script>
+    function calculate(apr, loanTerm, loanAmount) {
+        var j = (apr / 100) / 12;
+        var N = loanTerm * 12;
+        j2 = 1 + j;
+        var denom = Math.pow(j2, -N);
+        var num = j / (1 - denom);
+        var monthlyPayment = num * loanAmount;
+
+        document.getElementById("display").innerHTML = "Monthly Payment: $" + monthlyPayment.toFixed(2);
+    }
+    
+    function validate(){
+      document.getElementById("error").innerHTML = "";
+
+      var apr = document.getElementById("APR").value;
+      var loanTerm = document.getElementById("loanTerm").value;
+      var loanAmount = document.getElementById("loanAmount").value; 
+
+      if (apr > 0 && loanTerm > 0 && loanAmount > 0) {
+        calculate(apr, loanTerm, loanAmount);
+      }
+      else
+      {
+        if (apr < 1) {
+          setFocus("APR");
+          displayError("APR");
+        }
+        else if (loanTerm < 1) {
+          setFocus("loanTerm");
+          displayError("loanTerm");
+        }
+        else if (loanAmount < 1) {
+          setFocus("loanAmount");
+          displayError("loanAmount");
+        }
+      }
+    }
+
+    function displayError(id) {
+      var field;
+
+      if (id == "loanTerm") {
+        field = "loan term";
+      }
+      else if (id == "loanAmount") {
+        field = "loan amount";
+      }
+      else {
+        field = "APR";
+      } 
+
+      document.getElementById("error").innerHTML = "Invalid input for " + field + ". Please try again";
+    }
+
+    function setFocus(id) {
+      document.getElementById(id).focus();      
+    }
+
+    function setFocusFirstField() {
+      document.getElementById("error").innerHTML = "";
+      document.getElementById("APR").focus();
+    }
+  </script>
+  <title>Mortgage Calculator</title>
+</head>
+<body onload="setFocusFirstField()">
+  <!-- title -->
+  <h2>Bit Kim's Mortgage Calculator</h2>
+  <!-- calculator -->
+  <form id="calculator" action="" onclick="validate()" onreset="setFocusFirstField()">
+    <!-- display the calculated value -->
+    <p id="display">Monthly Payment: $0.00</p>
+    <div id="outerLine">
+      <label for="APR">APR: </label><br />
+      <input type="text" id="APR" placeholder="%" /><br />
+      <label for="loanTerm">Loan Term: </label><br />
+      <input type="text" id="loanTerm" placeholder="Years" /><br />
+      <label for="loanAmount">Loan Amount: </label><br />
+      <input type="text" id="loanAmount" placeholder="Dollars"/><br />
+    </div><!-- end of outerLine -->
+    <input type="button" id="calcButton" value="Calculate" />
+    <input type="reset" id="resetButton" value="Clear" />
+  </form>
+  <p id="error"></p>
+</body>
+</html>
